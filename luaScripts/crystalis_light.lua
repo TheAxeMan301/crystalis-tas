@@ -20,6 +20,7 @@ end;
 
 --Each of these functions controls a features. Comment or uncomment to control what is enabled.
 register_func("showEnemyHp", showEnemyHp)
+--register_func("showEnemyDefense", showEnemyDefense)  --Swap this in for showEnemyHp to see defense too
 --register_func("updateEnemyGui", updateEnemyGui)
 register_func("displayGlobalCounter", displayGlobalCounter)
 register_func("displayRandSeed", displayRandSeed)

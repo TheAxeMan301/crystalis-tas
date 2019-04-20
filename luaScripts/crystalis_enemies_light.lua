@@ -33,6 +33,7 @@ function getEnemyData(offset)
   edata.state = memory.readbyte(0x04ac+offset)
   edata.dir = memory.readbyte(0x036c+offset)
   edata.count = memory.readbyte(0x048c+offset)
+  edata.def = memory.readbyte(0x040c+offset)
   local mem1 = memory.readbyte(0x03ac+offset)
   local mem2 = memory.readbyte(0x042c+offset)
   edata.hbtableOffset = OR(4*AND(mem1, 0x0F), AND(mem2, 0x40))
@@ -162,6 +163,33 @@ function showEnemyHp()
        edata.dist < 200 and edata.state ~= 0 then
       --Now we've ensured enemy is alive and onscreen.
       safetext(edata.relx, edata.rely, edata.hp)
+      safetext(edata.relx, edata.rely+10, "E"..edata.index)
+    end;
+    end;
+  end;
+end;
+
+--displays onscreen text with enemy hp
+function showEnemyDefense()
+  local edata = {}
+
+  --grab the data we need
+  local all_edata = getAllEnemyData()
+
+  --display hp and hitbox
+  for i=1,#all_edata do
+    edata = all_edata[i]
+    if not hideZeroHpEnemies or edata.hp > 0 then
+    if edata.relx > 1 and edata.rely > 17 and
+       edata.relx < 255 and edata.rely < 231 and
+       edata.dist < 200 and edata.state ~= 0 then
+      --Now we've ensured enemy is alive and onscreen.
+      --Can count number of hits like this. More work needed to get the actual
+      --stab attack because of how the stab bonus only shows up when sword is out.
+      local hit = memory.readbyte(0x03E1) + memory.readbyte(0x03E2) - (edata.def/2)
+      local count = math.floor(edata.hp / hit) + 1
+      --safetext(edata.relx, edata.rely, edata.hp..'-'..(edata.def/2)..' ('..count..')')
+      safetext(edata.relx, edata.rely, edata.hp..'-'..(edata.def/2))
       safetext(edata.relx, edata.rely+10, "E"..edata.index)
     end;
     end;
